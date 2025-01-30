@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
 import streamlit as st
 from PIL import Image
 import joblib
@@ -11,26 +11,20 @@ from scipy.ndimage import center_of_mass
 
 
 # Corrected raw URL for the model file
-# model_url = "https://raw.githubusercontent.com/adbkp/NBI/NBI-AI/my_model.pkl"
+model_url = "https://raw.githubusercontent.com/adbkp/NBI/NBI-AI/my_model.pkl"
 
+
+
+# Download the model
 @st.cache_resource
 def load_model():
     try:
-        return joblib.load('C:/Users/adbkp/Downloads/rf_clf.joblib')
+        response = requests.get(model_url)
+        response.raise_for_status()  # Raise an error for bad responses
+        return joblib.load(BytesIO(response.content))
     except Exception as e:
-        st.error(f"Error loading model: {e}")
-        return None
-
-# Download the model
-# @st.cache_resource
-# def load_model():
-#    try:
-#        response = requests.get(model_url)
-#        response.raise_for_status()  # Raise an error for bad responses
-#        return joblib.load(BytesIO(response.content))
-#    except Exception as e:
-#        st.error(f"Error loading model: {e}")
-#        return None
+      st.error(f"Error loading model: {e}")
+      return None
     
 
 
@@ -68,12 +62,17 @@ def preprocess_image(image):
 # Creating the Streamlit application
 def main():
     st.sidebar.title("Navigation Menu")
-    nav = st.sidebar.radio("Choose a Section", ["Purpose", "Number Recognition"])
+    nav = st.sidebar.radio("Choose a Section", ["Purpose", "Number Recognition","About"])
 
     if nav == "Purpose":
         st.title("Number Recognition")
         st.header("Purpose")
         st.write("An application that recognizes handwritten numbers from images.")
+
+    if nav == "About":
+        st.title("About")
+        st.header("This application was created by Kerstin Palö, January 30, 2025")
+        st.write("The model is Random Forest ")
 
     if nav == "Number Recognition":
         st.title("Number Recognition")
