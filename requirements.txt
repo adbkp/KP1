@@ -1,10 +1,1 @@
 streamlit
-numpy
-pandas
-matplotlib
-PIL
-joblib
-requests
-BytesIO
-scipy
-scikit-learn
